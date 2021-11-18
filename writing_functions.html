@@ -191,11 +191,11 @@ pre code {
 <pre class="r"><code>x_vec = rnorm(30, mean = 5, sd = 3)
 
 (x_vec - mean(x_vec)) / sd(x_vec)</code></pre>
-<pre><code>##  [1]  1.00617022  0.29585512 -0.32226146 -1.09535208 -1.29124439  0.16195441
-##  [7]  1.85257919  2.13780709 -0.08801332  0.53430440 -0.44912572 -1.79648026
-## [13]  0.63972935  0.59615979 -0.64338350 -0.87017950 -0.23540417 -1.43287686
-## [19] -0.28052723 -0.71921556 -1.45298911  0.28498473  0.94237259 -1.21168973
-## [25]  1.26958723  0.06013910 -0.10190286  0.62381674  1.39174163  0.19344414</code></pre>
+<pre><code>##  [1] -0.54318527 -0.81482081 -0.42721375 -1.22331896 -0.24129592 -2.15425874
+##  [7]  0.57393329  0.00208643  1.25489186  1.32399507  1.63502136  1.41799319
+## [13] -1.00024926  1.60143303  0.13383378 -1.01322755 -0.25653012  0.88314850
+## [19]  1.16068379 -1.75206915  0.34864641  0.15867739  0.60288861 -0.46605777
+## [25]  0.54406212  0.36744180  0.22592266 -0.45377656 -0.59034799 -1.29830747</code></pre>
 <p>I want a function to compute z-scores</p>
 <pre class="r"><code>z_scores = function(x){
   
@@ -213,11 +213,11 @@ pre code {
 }
 
 z_scores(x_vec)</code></pre>
-<pre><code>##  [1]  1.00617022  0.29585512 -0.32226146 -1.09535208 -1.29124439  0.16195441
-##  [7]  1.85257919  2.13780709 -0.08801332  0.53430440 -0.44912572 -1.79648026
-## [13]  0.63972935  0.59615979 -0.64338350 -0.87017950 -0.23540417 -1.43287686
-## [19] -0.28052723 -0.71921556 -1.45298911  0.28498473  0.94237259 -1.21168973
-## [25]  1.26958723  0.06013910 -0.10190286  0.62381674  1.39174163  0.19344414</code></pre>
+<pre><code>##  [1] -0.54318527 -0.81482081 -0.42721375 -1.22331896 -0.24129592 -2.15425874
+##  [7]  0.57393329  0.00208643  1.25489186  1.32399507  1.63502136  1.41799319
+## [13] -1.00024926  1.60143303  0.13383378 -1.01322755 -0.25653012  0.88314850
+## [19]  1.16068379 -1.75206915  0.34864641  0.15867739  0.60288861 -0.46605777
+## [25]  0.54406212  0.36744180  0.22592266 -0.45377656 -0.59034799 -1.29830747</code></pre>
 <p>Try my function on some other things</p>
 <pre class="r"><code>z_scores(3)</code></pre>
 <pre><code>## Error in z_scores(3): Input must have at least three numbers</code></pre>
@@ -227,6 +227,202 @@ z_scores(x_vec)</code></pre>
 <pre><code>## Error in z_scores(mtcars): Input must be numeric</code></pre>
 <pre class="r"><code>z_scores(c(TRUE, TRUE, FALSE, TRUE))</code></pre>
 <pre><code>## Error in z_scores(c(TRUE, TRUE, FALSE, TRUE)): Input must be numeric</code></pre>
+</div>
+<div id="multiple-outputs" class="section level2">
+<h2>Multiple outputs</h2>
+<pre class="r"><code>mean_and_sd = function(x){
+  
+  if(!is.numeric(x)) {
+    stop(&quot;Input must be numeric&quot;)
+  }
+  
+  if(length(x) &lt; 3){
+    stop(&quot;Input must have at least three numbers&quot;)
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  
+  tibble(
+    mean = mean_x,
+    sd = sd_x
+  )
+}</code></pre>
+<p>Check that the function works</p>
+<pre class="r"><code>x_vec = rnorm(100)
+mean_and_sd(x_vec)</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##     mean    sd
+##    &lt;dbl&gt; &lt;dbl&gt;
+## 1 -0.114 0.930</code></pre>
+</div>
+<div id="multiple-inputs" class="section level2">
+<h2>Multiple inputs</h2>
+<p>I would like to do this with a function</p>
+<pre class="r"><code>sim_data = 
+  tibble(
+    x = rnorm(n = 100, mean = 4, sd = 3)
+  
+  )
+
+sim_data %&gt;% 
+  summarize(
+    mean = mean(x),
+    sd = sd(x)
+  )</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##    mean    sd
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  4.05  3.03</code></pre>
+<pre class="r"><code>sim_mean_sd = function(n, mu, sigma){
+  sim_data = 
+    tibble(
+      x = rnorm(n = n, mean = mu, sd = sigma)
+  
+  )
+
+  sim_data %&gt;% 
+  summarize(
+    mean = mean(x),
+    sd = sd(x)
+  )
+  
+}
+
+sim_mean_sd(100,6,3)</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##    mean    sd
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  5.88  3.18</code></pre>
+</div>
+<div id="lets-review-napoleon-dynamite" class="section level2">
+<h2>Let’s review Napoleon Dynamite</h2>
+<pre class="r"><code>url = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+
+dynamite_html = read_html(url)
+
+review_titles = 
+  dynamite_html %&gt;%
+  html_nodes(&quot;.a-text-bold span&quot;) %&gt;% ## use the tool
+  html_text()
+
+review_stars = 
+  dynamite_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+  html_text() %&gt;%
+  str_extract(&quot;^\\d&quot;) %&gt;%
+  as.numeric()
+
+review_text = 
+  dynamite_html %&gt;%
+  html_nodes(&quot;.review-text-content span&quot;) %&gt;%
+  html_text() %&gt;% 
+  str_replace_all(&quot;\n&quot;, &quot;&quot;) %&gt;% 
+  str_trim()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)</code></pre>
+<p>What about the next page of reviews…</p>
+<pre class="r"><code>read_page_reviews = function(url){
+dynamite_html = read_html(url)
+
+review_titles = 
+  dynamite_html %&gt;%
+  html_nodes(&quot;.a-text-bold span&quot;) %&gt;% ## use the tool
+  html_text()
+
+review_stars = 
+  dynamite_html %&gt;%
+  html_nodes(&quot;#cm_cr-review_list .review-rating&quot;) %&gt;%
+  html_text() %&gt;%
+  str_extract(&quot;^\\d&quot;) %&gt;%
+  as.numeric()
+
+review_text = 
+  dynamite_html %&gt;%
+  html_nodes(&quot;.review-text-content span&quot;) %&gt;%
+  html_text() %&gt;% 
+  str_replace_all(&quot;\n&quot;, &quot;&quot;) %&gt;% 
+  str_trim()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+
+reviews
+
+}</code></pre>
+<p>Try the function</p>
+<pre class="r"><code>dynamite_url = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=1&quot;
+
+read_page_reviews(dynamite_url)</code></pre>
+<pre><code>## # A tibble: 10 × 3
+##    title                            stars text                                  
+##    &lt;chr&gt;                            &lt;dbl&gt; &lt;chr&gt;                                 
+##  1 no brainer                           5 &quot;watched this with my teenage childre…
+##  2 Yeah., it was pretty good.           5 &quot;Yeah, it was pretty good.&quot;           
+##  3 Love it                              5 &quot;Didn&#39;t like this when it first came …
+##  4 it was                               5 &quot;mad good yo&quot;                         
+##  5 Fun!                                 4 &quot;Fun and entertaining. Story of the h…
+##  6 Vintage                              5 &quot;Easy to order. I think it was too pr…
+##  7 too many commercials                 1 &quot;5 minutes into the movie there was a…
+##  8 this film is so good!                5 &quot;VOTE FOR PEDRO!&quot;                     
+##  9 Good movie                           5 &quot;Weird story, goofy actors, GREAT MOV…
+## 10 I Just everyone to know this....     5 &quot;VOTE FOR PEDRO !!!!! LOL&quot;</code></pre>
+<p>Let’s read a few pages of reviews.</p>
+<pre class="r"><code>dynamite_url_base = &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=&quot;
+
+dynamite_urls = str_c(dynamite_url_base, 1:5)
+
+dynamite_urls[3]</code></pre>
+<pre><code>## [1] &quot;https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&amp;reviewerType=avp_only_reviews&amp;sortBy=recent&amp;pageNumber=3&quot;</code></pre>
+<pre class="r"><code>read_page_reviews(dynamite_urls[3])</code></pre>
+<pre><code>## # A tibble: 10 × 3
+##    title                                       stars text                       
+##    &lt;chr&gt;                                       &lt;dbl&gt; &lt;chr&gt;                      
+##  1 Not available w/in 48 hour window               1 I couldn&#39;t watch it and th…
+##  2 Your mom went to college.                       5 Classic funny movie. It ha…
+##  3 Very funny movie                                5 I watch this movie with my…
+##  4 Watch it twice! Trust me!                       5 Nothing to dislike!  Cult …
+##  5 A classic                                       5 If you don’t enjoy this mo…
+##  6 Can&#39;t say how many times I&#39;ve seen              5 Such a great movie. Will n…
+##  7 I pity the fool who doesn’t own this movie.     5 I love technology but not …
+##  8 I don’t know why it’s so popular!               2 My girlfriend loves it!    
+##  9 Okay                                            3 Okay                       
+## 10 A WHOLESOME comedic journey                     5 Not a moment of this movie…</code></pre>
+</div>
+<div id="mean-scoping-example" class="section level2">
+<h2>Mean scoping example</h2>
+<pre class="r"><code>f = function(x){
+  z = x + y
+  z
+
+}
+
+x = 1
+y = 2
+f(x = y)</code></pre>
+<pre><code>## [1] 4</code></pre>
+</div>
+<div id="functions-as-arguments" class="section level2">
+<h2>Functions as arguments</h2>
+<pre class="r"><code>my_summary = function(x, summ_func){
+  summ_func(x)
+}
+
+x_vec = rnorm(100, 3, 7)
+
+mean(x_vec)</code></pre>
+<pre><code>## [1] 2.955636</code></pre>
+<pre class="r"><code>median(x_vec)</code></pre>
+<pre><code>## [1] 3.461857</code></pre>
+<pre class="r"><code>my_summary(x_vec, mean)</code></pre>
+<pre><code>## [1] 2.955636</code></pre>
 </div>
 
 
